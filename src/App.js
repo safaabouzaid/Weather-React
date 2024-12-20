@@ -55,7 +55,8 @@ function App() {
   }
   useEffect(() => {
     i18n.changeLanguage(locale);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
   useEffect(() => {
     setdateAndTime(moment().format("MMMM Do YYYY, h:mm:ss a"));
     axios
@@ -156,7 +157,7 @@ function App() {
                       <Typography variant="h1" style={{ textAlign: "right" }}>
                         {temp.number}
                       </Typography>
-                      <img src={temp.icon} />
+                      <img src={temp.icon} alt="" />
                     </div>
                     {/*Degree*/}
                     <Typography variant="h16">{t(temp.description)}</Typography>
