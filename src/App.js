@@ -1,7 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import "./App.css";
 import { useTranslation } from "react-i18next";
-
+///redux import
+///redux
+import { useSelector, useDispatch } from "react-redux";
 import Typography from "@mui/material/Typography";
+import { fetchWeather } from "./weatherApiSlice";
+import { changeResult } from "./weatherApiSlice";
 ////REACT
 import { useEffect, useState } from "react";
 ///MATERIAL UI
@@ -9,6 +14,8 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import Container from "@mui/material/Container";
 import CloudIcon from "@mui/icons-material/Cloud";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+
 ////EXTERNAL LIBRARY
 import axios from "axios";
 import moment from "moment";
@@ -22,6 +29,19 @@ const theme = createTheme({
 });
 let cancelAxioas = null;
 function App() {
+  ///Redux code
+  const dispatch = useDispatch();
+  const result = useSelector((state) => {
+    console.log("the state is ", state);
+
+    return state.result;
+  });
+  const isloading = useSelector((state) => {
+    console.log("====================================");
+    console.log(state);
+    return state.isloading;
+    ///return state.weather.isloading;
+  });
   const { t, i18n } = useTranslation();
   //////======== States  =======/////
   const [dateAndTime, setdateAndTime] = useState("");
@@ -54,9 +74,11 @@ function App() {
     //i18n.changeLanguage("en");
   }
   useEffect(() => {
+    console.log("dispatching fetch weather from the componrnt ");
+    dispatch(fetchWeather());
+    //  dispatch(changeResult());
     i18n.changeLanguage(locale);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
   useEffect(() => {
     setdateAndTime(moment().format("MMMM Do YYYY, h:mm:ss a"));
     axios
@@ -154,6 +176,12 @@ function App() {
                         alignItems: "center",
                       }}
                     >
+                      {isloading ? (
+                        <CircularProgress style={{ color: "white" }} />
+                      ) : (
+                        ""
+                      )}
+
                       <Typography variant="h1" style={{ textAlign: "right" }}>
                         {temp.number}
                       </Typography>
