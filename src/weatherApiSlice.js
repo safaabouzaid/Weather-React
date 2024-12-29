@@ -8,12 +8,20 @@ export const fetchWeather = createAsyncThunk(
     const response = await axios.get(
       "https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=d41bbfd350396cfcb6173f7eaa4bbfb1"
     );
+
     const responsetemp = Math.round(response.data.main.temp - 272.15);
     const min = Math.round(response.data.main.temp_min - 272.15);
     const max = Math.round(response.data.main.temp_max - 272.15);
     const description = response.data.weather[0].description;
     const responseIcon = response.data.weather[0].icon;
     console.log(response);
+    return {
+      number: responsetemp,
+      min,
+      max,
+      description,
+      icon: ` https://openweathermap.org/img/wn/${responseIcon}@2x.png`,
+    };
   }
 );
 
@@ -37,6 +45,13 @@ const weatherApiSlice = createSlice({
         state.isloading = true;
       })
       .addCase(fetchWeather.fulfilled, (state, action) => {
+        console.log("=============*******++++++++++");
+
+        state.isloading = false;
+        console.log(state, action);
+        state.weather = action.payload;
+      })
+      .addCase(fetchWeather.rejected, (state, action) => {
         state.isloading = false;
       });
   },

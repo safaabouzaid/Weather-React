@@ -31,16 +31,15 @@ let cancelAxioas = null;
 function App() {
   ///Redux code
   const dispatch = useDispatch();
-  const result = useSelector((state) => {
-    console.log("the state is ", state);
 
-    return state.result;
-  });
   const isloading = useSelector((state) => {
     console.log("====================================");
     console.log(state);
-    return state.isloading;
+    return state.weather.isloading;
     ///return state.weather.isloading;
+  });
+  const temp = useSelector((state) => {
+    return state.weather.weather;
   });
   const { t, i18n } = useTranslation();
   //////======== States  =======/////
@@ -50,13 +49,6 @@ function App() {
 
   console.log("the time is " + dateAndTime);
   console.log("renderinng the component {mounting}");
-  const [temp, settemp] = useState({
-    number: null,
-    description: "",
-    min: null,
-    max: null,
-    icon: null,
-  });
 
   //////======== Event Handeler =======/////
   function handelLanguageClick() {
@@ -81,39 +73,6 @@ function App() {
   }, []);
   useEffect(() => {
     setdateAndTime(moment().format("MMMM Do YYYY, h:mm:ss a"));
-    axios
-      .get(
-        "https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=d41bbfd350396cfcb6173f7eaa4bbfb1",
-        {
-          cancelToken: new axios.CancelToken((c) => {
-            cancelAxioas = c;
-          }),
-        }
-      )
-      .then(function (response) {
-        // handle success
-        const responsetemp = Math.round(response.data.main.temp - 272.15);
-        const min = Math.round(response.data.main.temp_min - 272.15);
-        const max = Math.round(response.data.main.temp_max - 272.15);
-        const description = response.data.weather[0].description;
-        const responseIcon = response.data.weather[0].icon;
-        console.log(response);
-        settemp({
-          number: responsetemp,
-          min: min,
-          max: max,
-          description: description,
-          icon: `https://openweathermap.org/img/wn/${responseIcon}@2x.png`,
-        });
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      });
-    return () => {
-      console.log("cancaling");
-      cancelAxioas();
-    };
   }, []);
   return (
     <div className="App">
